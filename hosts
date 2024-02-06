@@ -1,16 +1,8 @@
-[p9jh]
-p9-jh-vm-1
+[server]
+x.x.x.x
 
-[p9servers]
-172.22.11.10
-172.22.11.11
-172.22.11.12
-172.22.11.20
-172.22.11.21
-172.22.11.22
-172.22.11.30
-172.22.11.31
-172.22.11.32
+[clients]
+x.x.x.x
 
 [localhost]
 localhost ansible_connection=local

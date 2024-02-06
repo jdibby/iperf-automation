@@ -1,8 +1,8 @@
 ### IPERF Test Across All Ubuntu Hosts ###
-### Written By: Joshua M. Dibble ###
+### Written By: Joshua Dibble ###
 
 ### Install IPERF on all servers
-- hosts: p9servers
+- hosts: clients
   remote_user: lab
   become: yes
   become_method: sudo
@@ -17,8 +17,8 @@
   - name: Start IPERF Server
     shell: iperf3 --server --daemon
 
-### Run IPERF on all servers
-- hosts: p9servers
+### Run IPERF on all clients
+- hosts: clients
   serial: 1
   remote_user: lab
   tasks:
@@ -26,9 +26,9 @@
     set_fact: iperf_server="10.10.10.1"
   - name: Set IPERF Results Output File
     set_fact: output_file="/tmp/iperf_results.{{ iperf_server }}.output"
-  - name: Start IPERF Test From Client to P9 Jump Host
+  - name: Start IPERF Test From Client to Server
     shell: "iperf3 --client {{ iperf_server }} --time 600 --parallel 1 >> {{ output_file }}"
-  - name: Copy IPERF Results Output File to P9 Jump Host
+  - name: Copy IPERF Results Output File to Server
     fetch: src={{ output_file }} dest=perf_results/ flat=false
   - name: Cleanup /tmp On All Servers
     ansible.builtin.file:
@@ -39,7 +39,7 @@
 - hosts: localhost
   connection: local
   tasks:
-  - name: Print IPERF Results Summary to P9JH
+  - name: Print IPERF Results Summary to Specific Host
     shell: "grep -RiE '10.10.10|receive|send' perf_results/172* | grep -iv 'Connecting' > perf_results/summary" 
     register: summary
 
