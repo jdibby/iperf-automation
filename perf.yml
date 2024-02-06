@@ -1,0 +1,53 @@
+### IPERF Test Across All P9 Hosts ###
+### Written By: Joshua Dibble ###
+
+### Install IPERF on all servers
+- hosts: p9servers
+  remote_user: lab
+  become: yes
+  become_method: sudo
+  tasks:
+  - name: Install IPERF on Servers
+    apt: name=iperf3 state=latest
+
+### Start IPERF Server
+- hosts: localhost
+  remote_user: lab
+  tasks:
+  - name: Start IPERF Server
+    shell: iperf3 --server --daemon
+
+### Run IPERF on all servers
+- hosts: p9servers
+  serial: 1
+  remote_user: lab
+  tasks:
+  - name: Set IPERF Server Name
+    set_fact: iperf_server="10.10.10.1"
+  - name: Set IPERF Results Output File
+    set_fact: output_file="/tmp/iperf_results.{{ iperf_server }}.output"
+  - name: Start IPERF Test From Client to P9 Jump Host
+    shell: "iperf3 --client {{ iperf_server }} --time 600 --parallel 1 >> {{ output_file }}"
+  - name: Copy IPERF Results Output File to P9 Jump Host
+    fetch: src={{ output_file }} dest=perf_results/ flat=false
+  - name: Cleanup /tmp On All Servers
+    ansible.builtin.file:
+      path: "{{ output_file }}"
+      state: absent
+
+### Summarize results
+- hosts: localhost
+  connection: local
+  tasks:
+  - name: Print IPERF Results Summary to P9JH
+    shell: "grep -RiE '10.10.10|receive|send' perf_results/172* | grep -iv 'Connecting' > perf_results/summary" 
+    register: summary
+
+### Summarize results
+#- hosts: localhost
+#  connection: local
+#  tasks:
+#  - name: Print IPERF Results Summary to P9JH
+#    shell: "awk '{print $4,$7,$8,$9,$10}' perf_results/summary | sed 's/port//g' | sed 's/sec//g' | awk '{print $1,$2,$4,$5}' | sed 's/\/ sender/ UP/g' | sed 's/\/ / DOWN/g' > perf_results/summary"
+#    register: summary
+
