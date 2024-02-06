@@ -1,8 +1,12 @@
 [server]
-x.x.x.x
+10.20.21.2
 
 [clients]
-x.x.x.x
+10.30.21.2
+10.20.22.2
+10.30.22.2
+10.20.23.2
+10.30.23.2
 
 [localhost]
 localhost ansible_connection=local

@@ -3,7 +3,7 @@
 
 ### Install IPERF on all servers
 - hosts: clients
-  remote_user: lab
+  remote_user: denlab
   become: yes
   become_method: sudo
   tasks:
@@ -12,7 +12,7 @@
 
 ### Start IPERF Server
 - hosts: localhost
-  remote_user: lab
+  remote_user: denlab
   tasks:
   - name: Start IPERF Server
     shell: iperf3 --server --daemon
@@ -20,10 +20,10 @@
 ### Run IPERF on all clients
 - hosts: clients
   serial: 1
-  remote_user: lab
+  remote_user: denlab
   tasks:
   - name: Set IPERF Server Name
-    set_fact: iperf_server="10.10.10.1"
+    set_fact: iperf_server="10.20.21.2"
   - name: Set IPERF Results Output File
     set_fact: output_file="/tmp/iperf_results.{{ iperf_server }}.output"
   - name: Start IPERF Test From Client to Server
@@ -40,7 +40,7 @@
   connection: local
   tasks:
   - name: Print IPERF Results Summary to Specific Host
-    shell: "grep -RiE '10.10.10|receive|send' perf_results/172* | grep -iv 'Connecting' > perf_results/summary" 
+    shell: "grep -RiE '10.|receive|send' perf_results/10.* | grep -iv 'Connecting' > perf_results/summary" 
     register: summary
 
 ### Summarize results
@@ -50,4 +50,3 @@
 #  - name: Print IPERF Results Summary to P9JH
 #    shell: "awk '{print $4,$7,$8,$9,$10}' perf_results/summary | sed 's/port//g' | sed 's/sec//g' | awk '{print $1,$2,$4,$5}' | sed 's/\/ sender/ UP/g' | sed 's/\/ / DOWN/g' > perf_results/summary"
 #    register: summary
-
