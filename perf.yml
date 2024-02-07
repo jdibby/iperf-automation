@@ -40,7 +40,7 @@
   connection: local
   tasks:
   - name: Print IPERF Results Summary to Specific Host
-    shell: "grep -RiE 'UBUNTU|receive|send' perf_results/10.* | grep -iv 'Connecting' > perf_results/summary" 
+    shell: "grep -RiE 'UBUNTU|receive|send' perf_results/*UBUNTU* | grep -iv 'Connecting' > perf_results/summary" 
     register: summary
 
 ### Summarize results
