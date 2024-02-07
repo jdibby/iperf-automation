@@ -1,12 +1,12 @@
 [server]
-10.20.21.2
+C1-S1-UBUNTU
 
 [clients]
-10.30.21.2
-10.20.22.2
-10.30.22.2
-10.20.23.2
-10.30.23.2
+C1-S2-UBUNTU
+C1-S3-UBUNTU
+C2-S1-UBUNTU
+C2-S2-UBUNTU
+C2-S3-UBUNTU
 
 [localhost]
 localhost ansible_connection=local
