@@ -27,7 +27,7 @@
   - name: Set IPERF Results Output File
     set_fact: output_file="/tmp/iperf_results.{{ iperf_server }}.output"
   - name: Start IPERF Test From Client to Server
-    shell: "iperf3 --client {{ iperf_server }} --time 600 --parallel 1 >> {{ output_file }}"
+    shell: "iperf3 --client {{ iperf_server }} --time 10 --parallel 1 >> {{ output_file }}"
   - name: Copy IPERF Results Output File to Server
     fetch: src={{ output_file }} dest=perf_results/ flat=false
   - name: Cleanup /tmp On All Servers
